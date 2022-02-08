@@ -1,2 +1,3 @@
 # wordle-solver
- A personal collection of algorithms to solve wordle problems
+
+A suite of tools to build, test and run algorithms that solve the popular web-game 'Wordle'

@@ -4,7 +4,7 @@ from pathlib import Path
 class WordleBot(object):
     bot_name = "WordleBot"
 
-    def __init__(self, dict_path=Path('dictionaries/wordle_dictionary.txt'), verbose=False) -> None:
+    def __init__(self, dict_path=Path('wordle_dictionary.txt'), verbose=False) -> None:
         self.five_letter_words = []
         with open(dict_path, 'r') as file:
             for line in file.readlines():

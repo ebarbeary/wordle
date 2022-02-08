@@ -1,18 +1,10 @@
-from WordleBot import WordleBot
-import pandas as pd
-import random
+from .WordleBot import WordleBot
 
-class RandomStartBot(WordleBot):
+class LetterCount(WordleBot):
     bot_name = "LetterCountBot"
 
-    def guess(self) -> str:
-        dictlen = len(self.dictionary)
+    def guess(self) -> str:   
         self.update_dictionary()
-        
-        # If update made no difference, must be round 1, guess randomly
-        if len(self.dictionary) == dictlen:
-            rand_idx = random.randint(0, len(self.dictionary)-1)
-            return self.dictionary.index[rand_idx]
         view = self.dictionary
 
         # Select most frequently occuring letter from all positions
@@ -70,10 +62,3 @@ class RandomStartBot(WordleBot):
         if self.verbose:
             print(f"Found modal letter \'{mode}\' at position \'{mode_pos}\'")
         return (mode, mode_pos, mode_freq)
-
-def main():
-    player = RandomStartBot(verbose=True)
-    player.guess()
-
-if __name__ == "__main__":
-    main()

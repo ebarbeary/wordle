@@ -1,7 +1,4 @@
-from LetterCountBot import LetterCountBot
-from RandomBot import RandomBot
-from RandomStartBot import RandomStartBot
-from WordleBot import WordleBot
+from bots import WordleBot
 from tqdm import tqdm
 from pathlib import Path
 
@@ -42,7 +39,7 @@ class WordleGameMaster:
         
         return (attempt_limit+1, stats)
 
-    def play_all(self, player : WordleBot, dict_path=Path("dictionaries/wordle_dictionary.txt"), attempt_limit=20) -> tuple:
+    def play_all(self, player : WordleBot, dict_path=Path("wordle/wordle_dictionary.txt"), attempt_limit=20) -> tuple:
         dictionary = []
         with open(dict_path, 'r') as file:
             if self.verbose:
@@ -62,22 +59,3 @@ class WordleGameMaster:
         
         mean = sum([key*results[key] for key in results.keys()]) / sum(results.values())
         return (mean, dict(sorted(results.items())))
-
-def main():
-    verbose = False
-    
-    print("\nTesting bot using full dictionary")
-    player = LetterCountBot(dict_path=Path("dictionaries/collins_scrabble_words_2019.txt") ,verbose=verbose)
-    gm = WordleGameMaster(verbose=verbose)
-    mean, results = gm.play_all(player)
-    print(f"Mean Score: {mean}")
-    print(f"Results distribution: {results}")
-
-    print("\nTesting bot using wordle dictionary")
-    player = LetterCountBot(dict_path=Path("dictionaries/wordle_dictionary.txt"), verbose=verbose)
-    mean, results = gm.play_all(player)
-    print(f"Mean Score: {mean}")
-    print(f"Results distribution: {results}")
-
-if __name__ == "__main__":
-    main()
