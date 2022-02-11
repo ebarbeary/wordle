@@ -1,10 +1,10 @@
-from wordle.bots import LetterCount, Random, RandomStart
+from wordle.bots import ModalLetter, Random
 from wordle import WordleGameMaster
 from pathlib import Path
 
 def test_bots():
     verbose = False
-    bots = [LetterCount, Random, RandomStart]
+    bots = [ModalLetter, Random]
     answers = []
     with open(Path("dictionaries/wordle_dictionary.txt"), 'r') as file:
         for line in file.readlines():
@@ -21,7 +21,8 @@ def test_bots():
         print(f"\nTesting \'{bot.bot_name}\' using wordle dictionary")
         player = bot(dictionary=valid_words, verbose=verbose)
         gm = WordleGameMaster(valid_words, verbose=verbose)
-        mean, results = gm.play_all(player, answers)
-        print(f"Mean Score: {mean}")
-        print(f"Results distribution: {results}")
+        results = gm.play_all(player, answers)
+        print(f"Mean Score: {results['mean_score']}")
+        print(f"Results distribution: {results['stats']}")
+        # print(f"Failed Words: {results['failed_rounds']}")
     assert True

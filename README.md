@@ -1,8 +1,10 @@
-# wordle
+Wordle
+========
 
 A suite of tools to build, test and run algorithms that solve the popular web-game 'Wordle'
 
-To install:
+Installation
+------------
 
 ```bash
 pip install -r requirements.txt
@@ -14,3 +16,8 @@ To run existing bots:
 ```bash
 python -m pytest -s
 ```
+
+License
+-------
+
+This project is licensed under the GNU GENERAL PUBLIC LICENSE Version 3

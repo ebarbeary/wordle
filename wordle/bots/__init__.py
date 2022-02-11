@@ -1,6 +1,5 @@
-__all__ = ["WordleBot", "LetterCount", "Random", "RandomStart"]
+__all__ = ["WordleBot", "ModalLetter", "Random", "RandomStart"]
 
 from .WordleBot import WordleBot
-from .LetterCount import LetterCount
+from .ModalLetter import ModalLetter
 from .Random import Random
-from .RandomStart import RandomStart
