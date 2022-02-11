@@ -1,21 +1,18 @@
 import pandas as pd
-from pathlib import Path
-
 class WordleBot(object):
     bot_name = "WordleBot"
 
-    def __init__(self, dict_path=Path('wordle_dictionary.txt'), verbose=False) -> None:
-        self.five_letter_words = []
-        with open(dict_path, 'r') as file:
-            for line in file.readlines():
-                word = line.strip().upper()
-                if len(word) == 5:
-                    tokenized = [char for char in word]
-                    tokenized.insert(0, word)
-                    self.five_letter_words.append(tokenized)
+    def __init__(self, dictionary : list, verbose=False) -> None:
+        self.word_list = []
+        for word in dictionary:
+            tokenized = [char for char in word]
+            tokenized.insert(0, word)
+            self.word_list.append(tokenized)
         
-        self.dictionary = pd.DataFrame(self.five_letter_words, columns=['word', '0', '1', '2', '3', '4'])
-        self.dictionary = self.dictionary.set_index("word")          
+        columns = ['word'] + [str(i) for i in range(len(tokenized)-1)]
+        self.dictionary = pd.DataFrame(self.word_list, columns=columns)
+        self.dictionary = self.dictionary.set_index("word")
+
         self.letter_counts = self.get_counts(self.dictionary)
         self.known_letters = set(())
         self.verbose = verbose
@@ -74,7 +71,7 @@ class WordleBot(object):
         self.letter_counts[position] = {char : 1}
     
     def reset(self):
-        self.dictionary = pd.DataFrame(self.five_letter_words, columns=['word', '0', '1', '2', '3', '4'])
+        self.dictionary = pd.DataFrame(self.word_list, columns=['word', '0', '1', '2', '3', '4'])
         self.dictionary = self.dictionary.set_index("word")          
         self.letter_counts = self.get_counts(self.dictionary)
         self.known_letters = set(())
