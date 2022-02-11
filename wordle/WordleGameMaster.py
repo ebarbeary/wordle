@@ -1,7 +1,5 @@
 from bots import WordleBot
 from tqdm import tqdm
-from pathlib import Path
-
 class WordleGameMaster:
     
     def __init__(self, valid_words=list, verbose=False) -> None:
@@ -9,33 +7,34 @@ class WordleGameMaster:
         self.valid_words = set(valid_words)
         return
     
-    def play(self, word : str, player : WordleBot, attempt_limit=20) -> tuple:
-        word = word.upper()
+    def play(self, answer : str, player : WordleBot, attempt_limit=20) -> dict:
+        answer = answer.upper()
         if self.verbose:
-            print(f"Begin game with word: \'{word}\' using player: \'{player.bot_name}\'\n")
+            print(f"Begin game with answer: \'{answer}\' using player: \'{player.bot_name}\'\n")
         stats = []
+        guesses = []
         for attempt in range(1, attempt_limit):
             if self.verbose:
                 print(f"***Attempt {attempt}***")            
-            
             guess = player.guess().upper()
             if guess not in self.valid_words:
                 raise ValueError(f"Player guess \'{guess}\' not a valid word")
-            results = self.score_guess(word, guess)            
+            results = self.score_guess(answer, guess)            
             stats.append(results)
-            
-            if guess == word:
-                return (attempt, stats)
+            guesses.append(guess)            
+            if guess == answer:
+                break
             else:
                 self.feedback_result(player, guess, results)
-        return (attempt_limit+1, stats)
+        player.reset()
+        return {"score":attempt, "results":stats, "guesses":guesses}
 
-    def score_guess(self, word : str, guess : str):
+    def score_guess(self, answer : str, guess : str):
         results = []
         for position, char in enumerate(guess):
-            if char == word[position]:
+            if char == answer[position]:
                 results.append('g')
-            elif char in word:
+            elif char in answer:
                 results.append('y')
             else:
                 results.append('b')            
@@ -53,14 +52,14 @@ class WordleGameMaster:
                     elif result == 'b':
                         bot.black(char)
 
-    def play_all(self, player : WordleBot, word_list : list, attempt_limit=20) -> tuple:
+    def play_all(self, player : WordleBot, answers : list, max_attempts=6) -> tuple:
         results = {}
-        for word in tqdm(word_list):
-            result, stats = self.play(word, player, attempt_limit)
-            results[result]= results.get(result,0)+1
-            if result == attempt_limit+1 and self.verbose:
-                print(f"Failed on word: {word}\nStats: {stats}")
-            player.reset()
+        for answer in tqdm(answers):
+            session = self.play(answer, player)
+            score = session["score"]
+            results[score] = results.get(score, 0) + 1
+            if score >= max_attempts and self.verbose:
+                print(f"Failed on answer: {answer}\nGuesses: {session['guesses']}\nStats: {session['stats']}")
 
         mean = sum([key*results[key] for key in results.keys()]) / sum(results.values())
         return (mean, dict(sorted(results.items())))
